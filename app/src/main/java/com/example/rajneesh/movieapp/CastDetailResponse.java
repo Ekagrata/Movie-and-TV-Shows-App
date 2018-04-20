@@ -20,6 +20,7 @@ public class CastDetailResponse {
     }
 
     String name;
+
     String biography;
     String place_of_birth;
     String profile_path;
