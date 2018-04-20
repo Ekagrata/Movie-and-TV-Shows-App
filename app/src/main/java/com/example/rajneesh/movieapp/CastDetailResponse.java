@@ -24,6 +24,8 @@ public class CastDetailResponse {
     String place_of_birth;
     String profile_path;
 
+
+
     public String getBirthday() {
         return birthday;
     }
