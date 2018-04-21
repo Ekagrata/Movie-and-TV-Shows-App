@@ -57,6 +57,7 @@ public class MovieTrailerListAdapter  extends RecyclerView.Adapter<MovieTrailerL
 
         MovieVideoResponse.Trailer trailer= trailers.get(position);
         holder.movieName.setText(trailer.getName());
+        holder.fav.setVisibility(View.GONE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,12 +85,14 @@ public class MovieTrailerListAdapter  extends RecyclerView.Adapter<MovieTrailerL
         TextView movieName;
         ImageView poster;
         View itemView;
+        ImageView fav;
 
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView= itemView;
             movieName= itemView.findViewById(R.id.moviename);
             poster= itemView.findViewById(R.id.poster);
+            fav= itemView.findViewById(R.id.fav);
 
         }
     }

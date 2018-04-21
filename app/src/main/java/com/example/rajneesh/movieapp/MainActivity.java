@@ -20,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements MovieFragment.MovieSelectedCallBack, TVShowFragment.TVShowSelectedCallBack{
+public class MainActivity extends AppCompatActivity implements MovieFragment.MovieSelectedCallBack, TVShowFragment.TVShowSelectedCallBack, FavoriteFragment.OnFavoriteSelected{
 
      ViewPagerAdapter adapter;
      ViewPager viewPager;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
 
 
 
-     private final static String pageTitle[]= {"Movies","TV Shows"};
+     private final static String pageTitle[]= {"Movies","TV Shows","Favorites"};
 
 
     @Override
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
         adapter= new ViewPagerAdapter(getSupportFragmentManager());
         adapter.AddFragment(new MovieFragment(),pageTitle[0]);
         adapter.AddFragment(new TVShowFragment(),pageTitle[1]);
+        adapter.AddFragment(new FavoriteFragment(),pageTitle[2]);
         viewPager.setAdapter(adapter);
         tabLayout= findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
                 if(newText!=null && !newText.isEmpty()){
                     isfound= new ArrayList<>();
                     isTvfound= new ArrayList<>();
-                    Toast.makeText(MainActivity.this,"init",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MainActivity.this,"init",Toast.LENGTH_LONG).show();
                     for(int i=0;i<movieList.size();i++){
 
                         String name= movieList.get(i).getTitle();
@@ -388,8 +389,16 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
     }
 
 
+    @Override
+    public void onclick(Favourite favourite) {
 
+        Intent intent= new Intent(MainActivity.this,MovieDetails.class);
+        Bundle bundle= new Bundle();
+        bundle.putInt("movieid",favourite.getId());
+      //  bundle.putString("name",favourite.getName());
+        //bundle.putString("poster_path",favourite.getPoster_path());
+        intent.putExtras(bundle);
+        startActivity(intent);
 
-
-
+    }
 }

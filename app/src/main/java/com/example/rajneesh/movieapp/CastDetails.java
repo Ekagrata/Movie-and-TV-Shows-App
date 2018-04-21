@@ -86,7 +86,7 @@ public class CastDetails extends AppCompatActivity {
             public void onResponse(Call<CastMovieCreditResponse> call, Response<CastMovieCreditResponse> response) {
                 CastMovieCreditResponse response1= response.body();
                 ArrayList<CastMovieCreditResponse.casts> movielist= response1.getCast();
-                Toast.makeText(CastDetails.this,"init",Toast.LENGTH_LONG).show();
+               // Toast.makeText(CastDetails.this,"init",Toast.LENGTH_LONG).show();
                 if(movielist!=null){
                     movieCreditlist.clear();
                     movieCreditlist.addAll(movielist);

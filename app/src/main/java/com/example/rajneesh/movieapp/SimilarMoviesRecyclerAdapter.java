@@ -26,30 +26,33 @@ public class SimilarMoviesRecyclerAdapter extends  RecyclerView.Adapter<SimilarM
     }
 
     Context context;
+    int height, width;
     ArrayList<Movie> movies;
+    WindowManager windowManager;
     SimilarMoviesRecyclerAdapter.OnItemClickListner listner;
 
 
-    public SimilarMoviesRecyclerAdapter(Context context, ArrayList<Movie> movies, SimilarMoviesRecyclerAdapter.OnItemClickListner listner) {
+    public SimilarMoviesRecyclerAdapter(Context context, ArrayList<Movie> movies, SimilarMoviesRecyclerAdapter.OnItemClickListner listner,WindowManager windowManager) {
         this.context = context;
         this.movies = movies;
         this.listner = listner;
+        this.windowManager=windowManager;
 
     }
 
-//    public void getScreenSize(){
-//        DisplayMetrics displayMetrics=new DisplayMetrics();
-//        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-//        height=displayMetrics.heightPixels;
-//        width=displayMetrics.widthPixels;
-//    }
+    public void getScreenSize(){
+        DisplayMetrics displayMetrics=new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        height=displayMetrics.heightPixels;
+        width=displayMetrics.widthPixels;
+    }
 
     @Override
     public SimilarMoviesRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView= inflater.inflate(R.layout.smallrow,parent,false);
+        View itemView= inflater.inflate(R.layout.row,parent,false);
         SimilarMoviesRecyclerAdapter.ViewHolder holder= new SimilarMoviesRecyclerAdapter.ViewHolder(itemView);
-        //getScreenSize();
+        getScreenSize();
         return holder;
 
     }
@@ -58,7 +61,8 @@ public class SimilarMoviesRecyclerAdapter extends  RecyclerView.Adapter<SimilarM
     public void onBindViewHolder(final SimilarMoviesRecyclerAdapter.ViewHolder holder, int position) {
 
         Movie movie= movies.get(position);
-        holder.movieName.setText(movie.getTitle());
+       holder.movieName.setText(movie.getTitle());
+       holder.fav.setVisibility(View.GONE);
         Log.d("fetchsizebind",movie.getTitle());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +73,7 @@ public class SimilarMoviesRecyclerAdapter extends  RecyclerView.Adapter<SimilarM
             }
         });
 
-        Picasso.get().load("http://image.tmdb.org/t/p/original"+movie.getPoster_path()).into(holder.poster);
+        Picasso.get().load("http://image.tmdb.org/t/p/original"+movie.getBackdrop_path()).resize(width,0).into(holder.poster);
         // Glide.with(context).load("http://image.tmdb.org/t/p/original"+movie.getBackdrop_path()).into(holder.poster);
 
 
@@ -87,13 +91,15 @@ public class SimilarMoviesRecyclerAdapter extends  RecyclerView.Adapter<SimilarM
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView movieName;
         ImageView poster;
+        ImageView fav;
         View itemView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView= itemView;
-            movieName= itemView.findViewById(R.id.moviename);
+           movieName= itemView.findViewById(R.id.moviename);
             poster= itemView.findViewById(R.id.poster);
+            fav= itemView.findViewById(R.id.fav);
 
         }
     }

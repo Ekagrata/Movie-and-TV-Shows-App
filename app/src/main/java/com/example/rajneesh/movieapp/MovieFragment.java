@@ -42,6 +42,7 @@ public class MovieFragment extends Fragment {
     MovieSelectedCallBack callBack;
     MovieDao movieDao;
     WindowManager windowManager;
+    FavoritesDao favoritesDao;
     MaterialSearchView searchView;
 
 
@@ -86,18 +87,15 @@ public class MovieFragment extends Fragment {
 
 
         movieDao= AppDatabase.getInstance(getContext()).getMoviesDao();
+        favoritesDao= AppDatabase.getInstance(getContext()).getFavoritesDAO();
         windowManager=getActivity().getWindowManager();
         searchView= view.findViewById(R.id.search_view);
 
 
         movies=(ArrayList<Movie>) movieDao.getPopularMovies();
-        Log.d("fetchsize",movies.size()+"");
-        if(movies.size()>0) {
-            Log.d("fetchsize", movies.get(0).getTitle() + "");
-            Log.d("fetchsize", movies.get(0).backdrop_path + "");
-//            Log.d("fetchsize", movies.size() + "");
-//            Log.d("fetchsize", movies.size() + "");
-        }
+       // Log.d("fetchsize",movies.size()+"");
+
+
         toprated=(ArrayList<Movie>) movieDao.getTopRatedMovies();
         upcoming=(ArrayList<Movie>) movieDao.getUpcoming();
         nowplaying=(ArrayList<Movie>) movieDao.getNowPlaying();
@@ -108,6 +106,25 @@ public class MovieFragment extends Fragment {
             public void OnItemClicked(int position) {
                 Movie movie = movies.get(position);
                 callBack.onMovieSelected(movie);
+
+            }
+
+            @Override
+            public void OnFavoriteSelected(int position) {
+                Movie movie= movies.get(position);
+                Favourite favourite = new Favourite(movie.getId(),movie.getTitle(),movie.getPoster_path(),1);
+                int x=movie.getIsFavourite();
+                if(x==0){
+                    Toast.makeText(getContext(),"added to favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(1);
+                    favoritesDao.insertFavourite(favourite);
+                }
+                if(x==1){
+                    Toast.makeText(getContext(),"removed from favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(0);
+                    favoritesDao.deleteFavourite(favourite);
+                }
+                movieDao.insertMovie(movie);
 
             }
         },windowManager);
@@ -126,6 +143,24 @@ public class MovieFragment extends Fragment {
                 callBack.onMovieSelected(movie);
 
             }
+
+            @Override
+            public void OnFavoriteSelected(int position) {
+                Movie movie= toprated.get(position);
+                Favourite favourite = new Favourite(movie.getId(),movie.getTitle(),movie.getPoster_path(),1);
+                int x=movie.getIsFavourite();
+                if(x==0){
+                    Toast.makeText(getContext(),"added to favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(1);
+                    favoritesDao.insertFavourite(favourite);
+                }
+                if(x==1){
+                    Toast.makeText(getContext(),"removed from favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(0);
+                    favoritesDao.deleteFavourite(favourite);
+                }
+                movieDao.insertMovie(movie);
+            }
         },windowManager);
         recyclerView1.setAdapter(adapter1);
         recyclerView1.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -142,6 +177,25 @@ public class MovieFragment extends Fragment {
                 callBack.onMovieSelected(movie);
 
             }
+
+            @Override
+            public void OnFavoriteSelected(int position) {
+                Movie movie= upcoming.get(position);
+                Favourite favourite = new Favourite(movie.getId(),movie.getTitle(),movie.getPoster_path(),1);
+                int x=movie.getIsFavourite();
+                if(x==0){
+                    Toast.makeText(getContext(),"added to favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(1);
+                    favoritesDao.insertFavourite(favourite);
+                }
+                if(x==1){
+                    Toast.makeText(getContext(),"removed from favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(0);
+                    favoritesDao.deleteFavourite(favourite);
+                }
+                movieDao.insertMovie(movie);
+
+            }
         },windowManager);
         recyclerView2.setAdapter(adapter2);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -156,6 +210,24 @@ public class MovieFragment extends Fragment {
 
                 Movie movie = nowplaying.get(position);
                 callBack.onMovieSelected(movie);
+            }
+
+            @Override
+            public void OnFavoriteSelected(int position) {
+                Movie movie= nowplaying.get(position);
+                Favourite favourite = new Favourite(movie.getId(),movie.getTitle(),movie.getPoster_path(),1);
+                int x=movie.getIsFavourite();
+                if(x==0){
+                    Toast.makeText(getContext(),"added to favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(1);
+                    favoritesDao.insertFavourite(favourite);
+                }
+                if(x==1){
+                    Toast.makeText(getContext(),"removed from favorites",Toast.LENGTH_SHORT).show();
+                    movie.setIsFavourite(0);
+                    favoritesDao.deleteFavourite(favourite);
+                }
+                movieDao.insertMovie(movie);
             }
         },windowManager);
         recyclerView3.setAdapter(adapter3);
@@ -188,6 +260,10 @@ public class MovieFragment extends Fragment {
                     for(int i=0;i<movieList.size();i++){
                         Movie m= movieList.get(i);
                         m.setIsNowPlaying(1);
+                        Favourite f=favoritesDao.checkMovie(m.id);
+                        if(f!=null){
+                            m.setIsFavourite(1);
+                        }
                     }
                     nowplaying.addAll(movieList);
 
@@ -223,6 +299,10 @@ public class MovieFragment extends Fragment {
                     for(int i=0;i<movieList.size();i++){
                         Movie m= movieList.get(i);
                         m.setIsUpcoming(1);
+                        Favourite f=favoritesDao.checkMovie(m.id);
+                        if(f!=null){
+                            m.setIsFavourite(1);
+                        }
                     }
 
                     upcoming.addAll(movieList);
@@ -259,6 +339,11 @@ public class MovieFragment extends Fragment {
                     for(int i=0;i<movieList.size();i++){
                         Movie m= movieList.get(i);
                         m.setIsTopRated(1);
+                        Favourite f=favoritesDao.checkMovie(m.id);
+                        if(f!=null){
+                            m.setIsFavourite(1);
+                           // fav.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+                        }
                     }
                     toprated.addAll(movieList);
 
@@ -295,6 +380,10 @@ public class MovieFragment extends Fragment {
                     for(int i=0;i<movieList.size();i++){
                         Movie m= movieList.get(i);
                         m.setIsPopular(1);
+                        Favourite f=favoritesDao.checkMovie(m.id);
+                        if(f!=null){
+                            m.setIsFavourite(1);
+                        }
                     }
                     movies.addAll(movieList);
                     adapter.notifyDataSetChanged();

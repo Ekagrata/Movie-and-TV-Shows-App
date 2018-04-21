@@ -25,6 +25,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     int height,width;
     interface OnItemClickListner{
         void OnItemClicked(int position);
+        void OnFavoriteSelected(int position);
     }
 
     Context context;
@@ -70,6 +71,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
             }
         });
+        if(movie.getIsFavourite()==1){
+            holder.fav.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+        }
+
+        holder.fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.fav.getDrawable().getConstantState()== context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp).getConstantState()){
+                    holder.fav.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+                }
+//
+                else{
+                    holder.fav.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+
+                }
+                listner.OnFavoriteSelected(holder.getAdapterPosition());
+
+            }
+        });
 
         Picasso.get().load("http://image.tmdb.org/t/p/original"+movie.getBackdrop_path()).resize(width,0).into(holder.poster);
        // Glide.with(context).load("http://image.tmdb.org/t/p/original"+movie.getBackdrop_path()).into(holder.poster);
@@ -89,6 +109,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView movieName;
         ImageView poster;
+        ImageView fav;
         View itemView;
 
         public ViewHolder(View itemView) {
@@ -96,6 +117,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             this.itemView= itemView;
             movieName= itemView.findViewById(R.id.moviename);
             poster= itemView.findViewById(R.id.poster);
+            fav= itemView.findViewById(R.id.fav);
 
         }
     }

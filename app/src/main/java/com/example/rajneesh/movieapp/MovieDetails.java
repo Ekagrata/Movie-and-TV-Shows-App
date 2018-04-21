@@ -126,7 +126,7 @@ public class MovieDetails extends AppCompatActivity {
 
 
             }
-        });
+        },getWindowManager());
         similarMovies.setAdapter(adapter1);
         similarMovies.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         similarMovies.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
